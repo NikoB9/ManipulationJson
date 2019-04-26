@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>JSON Sandbox</title>
+</head>
+<body>
+
+	<style type="text/css">
+		body{
+			font-size: 15px;
+		}
+		.testeur{
+			width: 80%;
+			margin-left: 5%;
+			height: 80%;
+			margin-top: 5%;
+			border-radius: 10px;
+			border: solid black 2px;
+			padding: 5%
+		}
+		img{
+			background: cornflowerblue;
+			/*border: 1px solid black;*/
+			border-radius: 10px;
+			padding: 3px;
+		}
+		img:hover{
+			background: deepskyblue;
+			cursor: pointer;
+		}
+	</style>
+
+	<div class="testeur">
+		
+	</div>
+
+	<script type="text/javascript">
+
+	function editData(obj, idChamp) {
+
+		var newValue = document.getElementById(idChamp).value;
+
+		obj.name = newValue;
+
+		console.log(objet);
+
+	}
+
+	function deleteData(idChamps) {
+
+	}
+
+	function addData(objet) {
+
+	}
+	
+
+	function printResult(people){
+		var monConteneur = document.getElementsByClassName('testeur');
+
+		//login
+		var login = people.Users[0].login;
+		//Mot de passe
+		var pwd = people.Users[0].password;
+
+
+		//préparation texte
+		descriptionUser = "pseudo : " + login +"<br>Mot de passe : " + pwd + "<br>";
+		descriptionUser += "<ul>Listes de courses : ";
+
+		//affichage des listes de course
+		var shoppingLists = people.Users[0].shoppingLists;	
+		for (var s = 0; s < shoppingLists.length; s++) {
+
+			descriptionUser += "<li><input name='listName"+s+"' id='listName"+s+"' value='"+shoppingLists[s].name+"'> &nbsp; <img src='refresh.svg' width='15' height='15' onclick=\"editData("+people+",'listName"+s+"')\"></li>";
+			descriptionUser += "<ul><li>Categories : </li>";
+
+			for(var c = 0; c < shoppingLists[s].categories.length ; c++){
+
+				descriptionUser += "<li>"+shoppingLists[s].categories[c].name+"</li>";
+				descriptionUser += "<ul><li>Ingrédients : </li>";
+
+				for(var i = 0; i < shoppingLists[s].categories[c].ingredients.length; i++){
+
+					var ingredient = shoppingLists[s].categories[c].ingredients[i];
+
+					descriptionUser += "<li id='ingredient"+(s+c+i)+"' value='people.Users[0].shoppingLists[("+s+"].categories["+c+"].ingredients["+i+"]'>"+ingredient.quantity+" "+ingredient.unit+" de "+ingredient.name+" pour un maximum de : "+ingredient.max_price+" "+shoppingLists[s].money_unit+"<img src='garbage.svg' width='15' height='15' onclick=\"deleteData('ingredient"+(s+c+i)+"')\"></li>";
+
+				}
+
+
+				descriptionUser += "<img src='edit.svg' width='15' height='15' onclick=\"addData('people.Users[0].shoppingLists[("+s+"].categories["+c+"]',)\"></ul>";
+
+			}
+
+			descriptionUser += "</ul>";
+
+		}
+		descriptionUser += "</ul>";
+
+
+		monConteneur[0].innerHTML += descriptionUser;
+	}
+
+	//Récupération du json
+	var xhttp = new XMLHttpRequest();
+	 xhttp.onreadystatechange = function() {
+	    if (this.readyState == 4 && this.status == 200) {
+	    	console.log(xhttp.responseText);
+	    	var people = JSON.parse(xhttp.responseText);
+	    	printResult(people);
+	    }
+	 };
+	 xhttp.open("GET", "data.json", true);
+	 xhttp.send();	
+	//people = JSON.stringify(person);
+
+
+	</script>
+</body>
+</html>
